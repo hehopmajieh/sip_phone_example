@@ -46,7 +46,9 @@
 #define FAILLING_END_GAIN       1
 #define RISING_START_GAIN       2
 #define MUSIC_GAIN_DB          -10
-#define PLAY_STATUS            ESP_DOWNMIX_TYPE_OUTPUT_ONE_CHANNEL
+//#define PLAY_STATUS            ESP_DOWNMIX_TYPE_OUTPUT_ONE_CHANNEL
+#define PLAY_STATUS ESP_DOWNMIX_OUTPUT_TYPE_ONE_CHANNEL
+
 
 
 // ==== Display dimensions in pixels ============================
@@ -287,8 +289,8 @@ static esp_err_t g711dec_pipeline_open()
     
     ESP_LOGI(TAG, "[2.3] Create downmixer");
     downmix_cfg_t downmix_cfg = DEFAULT_DOWNMIX_CONFIG();
-    downmix_cfg.downmix_info.gain[FAILLING_END_GAIN] = MUSIC_GAIN_DB;
-    downmix_cfg.downmix_info.gain[RISING_START_GAIN] = MUSIC_GAIN_DB;
+    //downmix_cfg.downmix_info.gain[FAILLING_END_GAIN] = MUSIC_GAIN_DB;
+    //downmix_cfg.downmix_info.gain[RISING_START_GAIN] = MUSIC_GAIN_DB;
     downmixer = downmix_init(&downmix_cfg);
     ESP_LOGI(TAG, "[3.1] Create raw stream to write data");
     
@@ -345,11 +347,17 @@ static esp_err_t g711dec_pipeline_open()
     audio_element_set_input_ringbuf(downmixer, rb);
     
     rb = audio_element_get_input_ringbuf(el_raw_write);
-    downmix_set_second_input_rb(downmixer, rb);
-    
+    downmix_set_input_rb(downmixer, rb,0);
+    downmix_set_input_rb(downmixer, rb,1);
+    downmix_set_input_rb(downmixer, rb,2);
+    downmix_set_input_rb(downmixer, rb,3);
+	
+ 
     audio_pipeline_run(speaker);    
     audio_pipeline_run(master);
-    downmix_set_output_status(downmixer, PLAY_STATUS);
+    //downmix_set_output_status(downmixer, PLAY_STATUS);
+       downmix_set_output_type(downmixer, PLAY_STATUS);
+
     return ESP_OK;
 }
 

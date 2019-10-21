@@ -28,6 +28,7 @@
 #include "board.h"
 #include "audio_error.h"
 #include "audio_mem.h"
+#include "driver/touch_pad.h"
 
 static const char *TAG = "ESP32-ADF_C";
 
